@@ -111,10 +111,10 @@ const projects = [
 ];
 
 const heroPhrases = [
+  "Build for what's next.",
   "Launch smarter.",
   "Think bigger.",
-  "Create more.",
-  "Make it real.",
+  "Make ideas real.",
 ];
 
 function ProjectPreview({ project }) {
@@ -212,17 +212,20 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [heroPhraseIndex, setHeroPhraseIndex] = useState(0);
-  const [typedHeroPhrase, setTypedHeroPhrase] = useState(heroPhrases[0]);
+  const [typedHeroPhrase, setTypedHeroPhrase] = useState("");
   const [isDeletingHeroPhrase, setIsDeletingHeroPhrase] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    if (shouldReduceMotion) return undefined;
+    if (isLoading || shouldReduceMotion) {
+      return undefined;
+    }
 
     const currentPhrase = heroPhrases[heroPhraseIndex];
-    const isPhraseComplete = typedHeroPhrase === currentPhrase && !isDeletingHeroPhrase;
+    const isPhraseComplete =
+      typedHeroPhrase === currentPhrase && !isDeletingHeroPhrase;
     const delay = isPhraseComplete
       ? 1500
       : isDeletingHeroPhrase
@@ -243,9 +246,14 @@ function App() {
         setTypedHeroPhrase(currentPhrase.slice(0, typedHeroPhrase.length + 1));
       }
     }, delay);
-
     return () => window.clearTimeout(timer);
-  }, [heroPhraseIndex, isDeletingHeroPhrase, shouldReduceMotion, typedHeroPhrase]);
+  }, [
+    heroPhraseIndex,
+    isDeletingHeroPhrase,
+    isLoading,
+    shouldReduceMotion,
+    typedHeroPhrase,
+  ]);
 
   useEffect(() => {
     const timer = window.setTimeout(
@@ -301,11 +309,15 @@ function App() {
         <div className="hero-video-layer" aria-hidden="true" />
         <motion.div className="hero-copy" variants={reveal} initial="hidden" animate="visible" transition={{ delay: shouldReduceMotion ? 0 : 0.15 }}>
           <p className="eyebrow"><span className="status-dot" /> Independent digital studio · Australia & beyond</p>
-          <motion.h1 id="hero-title" variants={headlineLines} initial="hidden" animate="visible" aria-label="Build better. Launch smarter.">
+          <motion.h1 id="hero-title" variants={headlineLines} initial="hidden" animate="visible" aria-label={"Build better. Build for what's next."}>
             <span className="hero-line" aria-hidden="true"><motion.span variants={headlineLine}>Build better.</motion.span></span>
-            <span className="hero-line hero-line--accent" aria-hidden="true">
-              <motion.span variants={headlineLine}>
-                <span>{typedHeroPhrase}<span className="typing-cursor" /></span>
+            <span className="hero-line hero-line--accent">
+              <motion.span variants={headlineLine} className="hero-headline-stack" aria-hidden="true">
+                <span className="hero-headline-reserve">Build for what&apos;s next.</span>
+                <span className="hero-headline-typed">
+                  {shouldReduceMotion ? heroPhrases[0] : typedHeroPhrase}
+                  {!shouldReduceMotion && <span className="typing-cursor" />}
+                </span>
               </motion.span>
             </span>
           </motion.h1>

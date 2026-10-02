@@ -644,11 +644,28 @@ button {
 }
 
 .hero-line--accent {
-  min-height: 1.96em;
+  min-height: 1lh;
 }
 
 .hero-line > span {
   display: block;
+}
+
+.hero-line > .hero-headline-stack {
+  display: grid;
+  width: 100%;
+  min-height: 1lh;
+  text-wrap: balance;
+}
+
+.hero-headline-reserve,
+.hero-headline-typed {
+  grid-area: 1 / 1;
+  text-wrap: balance;
+}
+
+.hero-headline-reserve {
+  visibility: hidden;
 }
 
 .typing-cursor {
