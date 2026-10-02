@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "framer-motion";
 
 const HeroScene = lazy(() => import("./components/HeroScene"));
@@ -90,6 +90,55 @@ const steps = [
       "We launch with care and stay focused on what will make the work better over time.",
   },
 ];
+
+const projects = [
+  {
+    number: "01",
+    name: "Ember & Bun",
+    category: "Restaurant · Fire-grilled favorites",
+    url: "https://ember-bun-six.vercel.app/",
+    description:
+      "A bold, flame-kissed restaurant experience made to turn a first look into a first bite.",
+  },
+  {
+    number: "02",
+    name: "Grilli",
+    category: "Restaurant · Dining & reservations",
+    url: "https://grill-app-two.vercel.app/",
+    description:
+      "An elegant restaurant destination pairing a rich visual story with effortless discovery.",
+  },
+];
+
+function ProjectPreview({ project }) {
+  const previewRef = useRef(null);
+  const [scale, setScale] = useState(0.45);
+
+  useEffect(() => {
+    const preview = previewRef.current;
+    if (!preview) return undefined;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setScale(entry.contentRect.width / 1200);
+    });
+    observer.observe(preview);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={previewRef} className="project-preview-frame">
+      <iframe
+        className="project-preview"
+        src={project.url}
+        title={`${project.name} website preview`}
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        style={{ "--preview-scale": scale }}
+      />
+    </div>
+  );
+}
 
 function BrandMark({ compact = false, animated = false, markOnly = false, href = "#top" }) {
   const BrandContainer = href ? "a" : "div";
@@ -200,6 +249,7 @@ function App() {
             aria-label="Main navigation"
           >
             <motion.a href="#services" onClick={closeMenu} whileHover={{ y: -2, color: "#ff702b" }} transition={{ duration: 0.18 }}>Services</motion.a>
+            <motion.a href="#projects" onClick={closeMenu} whileHover={{ y: -2, color: "#ff702b" }} transition={{ duration: 0.18 }}>Projects</motion.a>
             <motion.a href="#approach" onClick={closeMenu} whileHover={{ y: -2, color: "#ff702b" }} transition={{ duration: 0.18 }}>Approach</motion.a>
             <motion.a className="nav-contact" href="#contact" onClick={closeMenu} whileHover={{ y: -2, borderColor: "#ff702b" }} transition={{ duration: 0.18 }}>
               Start a project <span aria-hidden="true">↗</span>
@@ -255,6 +305,64 @@ function App() {
               <h3>{service.title}</h3>
               <p>{service.description}</p>
               <motion.span className="row-arrow" aria-hidden="true" whileHover={{ x: 4, y: -4, rotate: 45 }}>↗</motion.span>
+            </motion.article>
+          ))}
+        </div>
+      </motion.section>
+
+      <motion.section
+        className="projects section-wrap"
+        id="projects"
+        aria-labelledby="projects-title"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.12 }}
+        variants={stagger}
+      >
+        <motion.div className="projects-heading" variants={reveal}>
+          <div>
+            <p className="eyebrow">Selected work · Live previews</p>
+            <h2 id="projects-title">Our projects.<br /><span>Made to make a mark.</span></h2>
+          </div>
+          <p className="projects-intro">
+            A closer look at digital experiences we’ve brought to life. Explore
+            each site right here, or open it in a new tab.
+          </p>
+        </motion.div>
+        <div className="project-grid">
+          {projects.map((project) => (
+            <motion.article className="project-card" key={project.number} variants={reveal}>
+              <div className="project-browser">
+                <div className="project-browser-bar" aria-hidden="true">
+                  <span className="browser-dot" />
+                  <span className="browser-dot" />
+                  <span className="browser-dot" />
+                  <span className="browser-address">{project.url.replace("https://", "")}</span>
+                  <span className="browser-open">↗</span>
+                </div>
+                <ProjectPreview project={project} />
+              </div>
+              <div className="project-details">
+                <div className="project-meta">
+                  <span className="row-number">{project.number}</span>
+                  <span>{project.category}</span>
+                </div>
+                <div className="project-title-row">
+                  <div>
+                    <h3>{project.name}</h3>
+                    <p>{project.description}</p>
+                  </div>
+                  <a
+                    className="project-link"
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit ${project.name} website (opens in a new tab)`}
+                  >
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
             </motion.article>
           ))}
         </div>
