@@ -31,9 +31,6 @@ The included GitHub Actions workflow builds and publishes the site whenever a ch
 2. In the repository, open **Settings → Pages** and set **Build and deployment → Source** to **GitHub Actions**.
 3. Push to `main` or manually run **Deploy to GitHub Pages** from the **Actions** tab.
 
-For this repository, the published address will be:
-
-<https://thaveeshathathsara.github.io/humbytes/>
 
 The Vite base path is set automatically in GitHub Actions and remains `/` for local development.
 
