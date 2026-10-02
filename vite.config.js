@@ -9,7 +9,7 @@ const productionSecurityPolicy = {
       "default-src 'self'",
       "base-uri 'self'",
       "object-src 'none'",
-      "frame-src 'none'",
+      "frame-src https://ember-bun-six.vercel.app https://grill-app-two.vercel.app",
       "form-action 'self'",
       "script-src 'self'",
       "style-src 'self' 'unsafe-inline'",

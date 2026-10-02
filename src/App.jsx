@@ -110,6 +110,13 @@ const projects = [
   },
 ];
 
+const heroPhrases = [
+  "Launch smarter.",
+  "Think bigger.",
+  "Create more.",
+  "Make it real.",
+];
+
 function ProjectPreview({ project }) {
   const previewRef = useRef(null);
   const [scale, setScale] = useState(0.45);
@@ -204,9 +211,41 @@ function LoadingScreen({ reducedMotion }) {
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [heroPhraseIndex, setHeroPhraseIndex] = useState(0);
+  const [typedHeroPhrase, setTypedHeroPhrase] = useState(heroPhrases[0]);
+  const [isDeletingHeroPhrase, setIsDeletingHeroPhrase] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (shouldReduceMotion) return undefined;
+
+    const currentPhrase = heroPhrases[heroPhraseIndex];
+    const isPhraseComplete = typedHeroPhrase === currentPhrase && !isDeletingHeroPhrase;
+    const delay = isPhraseComplete
+      ? 1500
+      : isDeletingHeroPhrase
+        ? typedHeroPhrase
+          ? 45
+          : 350
+        : 72;
+
+    const timer = window.setTimeout(() => {
+      if (isPhraseComplete) {
+        setIsDeletingHeroPhrase(true);
+      } else if (isDeletingHeroPhrase && typedHeroPhrase) {
+        setTypedHeroPhrase((phrase) => phrase.slice(0, -1));
+      } else if (isDeletingHeroPhrase) {
+        setHeroPhraseIndex((index) => (index + 1) % heroPhrases.length);
+        setIsDeletingHeroPhrase(false);
+      } else {
+        setTypedHeroPhrase(currentPhrase.slice(0, typedHeroPhrase.length + 1));
+      }
+    }, delay);
+
+    return () => window.clearTimeout(timer);
+  }, [heroPhraseIndex, isDeletingHeroPhrase, shouldReduceMotion, typedHeroPhrase]);
 
   useEffect(() => {
     const timer = window.setTimeout(
@@ -263,8 +302,12 @@ function App() {
         <motion.div className="hero-copy" variants={reveal} initial="hidden" animate="visible" transition={{ delay: shouldReduceMotion ? 0 : 0.15 }}>
           <p className="eyebrow"><span className="status-dot" /> Independent digital studio · Australia & beyond</p>
           <motion.h1 id="hero-title" variants={headlineLines} initial="hidden" animate="visible" aria-label="Build better. Launch smarter.">
-            <span className="hero-line"><motion.span variants={headlineLine}>Build better.</motion.span></span>
-            <span className="hero-line hero-line--accent"><motion.span variants={headlineLine}>Launch smarter.</motion.span></span>
+            <span className="hero-line" aria-hidden="true"><motion.span variants={headlineLine}>Build better.</motion.span></span>
+            <span className="hero-line hero-line--accent" aria-hidden="true">
+              <motion.span variants={headlineLine}>
+                <span>{typedHeroPhrase}<span className="typing-cursor" /></span>
+              </motion.span>
+            </span>
           </motion.h1>
           <p className="hero-description">
             Modern websites and web applications for businesses, startups & growing brands.

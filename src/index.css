@@ -272,7 +272,7 @@ body {
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: only dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --ink: #000000;
@@ -643,8 +643,27 @@ button {
   color: var(--paper);
 }
 
+.hero-line--accent {
+  min-height: 1.96em;
+}
+
 .hero-line > span {
   display: block;
+}
+
+.typing-cursor {
+  display: inline-block;
+  height: 0.82em;
+  margin-left: 0.06em;
+  border-right: 0.075em solid currentColor;
+  vertical-align: -0.04em;
+  animation: typing-cursor-blink 0.8s steps(2, start) infinite;
+}
+
+@keyframes typing-cursor-blink {
+  to {
+    visibility: hidden;
+  }
 }
 
 .hero-description {
@@ -1505,5 +1524,9 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .typing-cursor {
+    animation: none;
   }
 }
