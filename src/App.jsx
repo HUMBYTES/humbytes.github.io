@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { AnimatePresence, MotionConfig, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "framer-motion";
 
 const HeroScene = lazy(() => import("./components/HeroScene"));
 
@@ -155,18 +155,7 @@ function LoadingScreen({ reducedMotion }) {
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const heroRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress: heroScrollProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const { scrollYProgress: pageScrollProgress } = useScroll();
-  const videoParallax = useTransform(
-    heroScrollProgress,
-    [0, 1],
-    shouldReduceMotion ? [0, 0] : [-24, 88]
-  );
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -182,11 +171,6 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <main id="top" className="site-shell">
-      <motion.div
-        className="scroll-progress"
-        style={{ scaleX: pageScrollProgress }}
-        aria-hidden="true"
-      />
       <AnimatePresence>
         {isLoading && <LoadingScreen key="brand-loader" reducedMotion={shouldReduceMotion} />}
       </AnimatePresence>
@@ -224,20 +208,8 @@ function App() {
         </div>
       </motion.header>
 
-      <section ref={heroRef} className="hero section-wrap" aria-labelledby="hero-title">
-        <div className="hero-video-layer" aria-hidden="true">
-          <motion.video
-            className="hero-background-video"
-            src="/videos/humbytes-background.mp4"
-            poster="/img/humbytes-background-poster.jpg"
-            autoPlay={!shouldReduceMotion}
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            style={{ y: videoParallax }}
-          />
-        </div>
+      <section className="hero section-wrap" aria-labelledby="hero-title">
+        <div className="hero-video-layer" aria-hidden="true" />
         <motion.div className="hero-copy" variants={reveal} initial="hidden" animate="visible" transition={{ delay: shouldReduceMotion ? 0 : 0.15 }}>
           <p className="eyebrow"><span className="status-dot" /> Independent digital studio · Australia & beyond</p>
           <motion.h1 id="hero-title" variants={headlineLines} initial="hidden" animate="visible" aria-label="Build better. Launch smarter.">

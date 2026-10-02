@@ -5,6 +5,20 @@ import clsx from "clsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const renderWord = (word) => {
+  const segments = word.split(/(<b>.*?<\/b>)/g);
+
+  return segments.map((segment, index) => {
+    const boldText = segment.match(/^<b>(.*?)<\/b>$/);
+
+    return boldText ? (
+      <b key={index}>{boldText[1]}</b>
+    ) : (
+      <span key={index}>{segment.replaceAll("&#39;", "'")}</span>
+    );
+  });
+};
+
 const AnimatedTitle = ({ title, containerClass }) => {
   const containerRef = useRef(null);
 
@@ -45,8 +59,9 @@ const AnimatedTitle = ({ title, containerClass }) => {
             <span
               key={idx}
               className="animated-word"
-              dangerouslySetInnerHTML={{ __html: word }}
-            />
+            >
+              {renderWord(word)}
+            </span>
           ))}
         </div>
       ))}
