@@ -149,25 +149,16 @@ function ProjectPreview({ project }) {
 
 function BrandMark({ compact = false, animated = false, markOnly = false, href = "#top" }) {
   const BrandContainer = href ? "a" : "div";
-  const BrandBar = animated ? motion.span : "span";
 
   return (
     <BrandContainer
-      className={`brand${compact ? " brand--compact" : ""}`}
+      className={`brand${compact ? " brand--compact" : ""}${animated ? " brand--animated" : ""}`}
       href={href || undefined}
       aria-label="Humbytes"
     >
       <span className="brand-mark" aria-hidden="true">
         {[0, 1, 2, 3].map((bar) => (
-          <BrandBar
-            key={bar}
-            animate={animated ? { scaleY: [1, bar === 3 ? 0.72 : 0.82, 1] } : undefined}
-            transition={
-              animated
-                ? { duration: 0.8, repeat: Infinity, ease: "easeInOut", delay: bar * 0.11 }
-                : undefined
-            }
-          />
+          <span key={bar} />
         ))}
       </span>
       {!markOnly && (
@@ -278,7 +269,7 @@ function App() {
         transition={{ duration: 0.55, delay: shouldReduceMotion ? 0 : 0.3 }}
       >
         <div className="header-inner">
-          <BrandMark compact />
+          <BrandMark compact animated={!shouldReduceMotion} />
           <button
             className={`menu-toggle${menuOpen ? " is-open" : ""}`}
             type="button"
@@ -447,15 +438,29 @@ function App() {
           <h2 id="contact-title">Your next<br /><span>starts here.</span></h2>
           <div className="contact-action">
             <p>Have a project in mind? Tell us a little about it.</p>
-            <motion.a className="email-link" href="mailto:humbytes@gmail.com" whileHover={{ x: 6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-              humbytes@gmail.com <span aria-hidden="true">↗</span>
+            <motion.a
+              className="email-link"
+              href="mailto:humbytes@gmail.com"
+              whileHover={shouldReduceMotion ? undefined : { y: -4, rotateX: 2, rotateY: -2 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <span className="email-link-copy">
+                <span className="email-link-label">Start a conversation</span>
+                <span className="email-link-address">humbytes@gmail.com</span>
+              </span>
+              <span className="email-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M7 17 17 7M7 7h10v10" />
+                </svg>
+              </span>
             </motion.a>
           </div>
         </motion.div>
       </motion.section>
 
       <motion.footer className="site-footer section-wrap" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={reveal}>
-        <BrandMark />
+        <BrandMark animated={!shouldReduceMotion} />
         <p>Web development & digital solutions</p>
         <span className="copyright">© {new Date().getFullYear()} HUMBYTES</span>
       </motion.footer>
